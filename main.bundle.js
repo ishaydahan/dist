@@ -16,7 +16,7 @@ webpackEmptyContext.id = "../../../../../src async recursive";
 /***/ "../../../../../src/app/answer-list.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"answer-content\">\n    <h1 class=\"page-title\">{{this.appComponent.questionString + '?'}}</h1>\n    <h3 class=\"page-title\">Add Answer:</h3>\n  <div class=\"answer-create\">\n      <form #answerForm=\"ngForm\" (ngSubmit) = \"createAnswer(answerForm)\" novalidate>\n    \t\t<input type=\"text\" id=\"title\" class=\"form-control\" placeholder=\"Type an answer\"\n    \t\t       required\n    \t\t       name=\"title\" [(ngModel)]=\"newAnswer.content\"\n    \t\t       #title=\"ngModel\" >\n        <input type=\"number\" id=\"grade\" class=\"form-control\" placeholder=\"Type a grade or leave empty for student ans\"\n               name=\"grade\" [(ngModel)]=\"tempGrade\"\n               #title=\"ngModel\" >\n\n        <div align=\"center\">\n          <button type=\"submit\" md-raised-button color=\"primary\">SUBMIT</button>\n\n        </div>\n        <h3 class=\"page-title\">All Answers:</h3>\n\n    \t\t<div *ngIf=\"title.errors && title.dirty\"\n    \t\t     class=\"alert alert-danger\">\n    \t\t    <div [hidden]=\"!title.errors.required\">\n    \t\t      Title is required.\n    \t\t    </div>\n    \t\t</div>\n    \t</form>\n    </div>\n    <ul class=\"answer-list\">\n      <li *ngFor=\"let answer of answers\"  >\n        <div class=\"answer-row\" *ngIf=\"!editing || editingAnswer.id != answer.id\">\n                        <span class=\"answer-title\">\n                            <p>Wrriten by: {{answer.writer}}</p>\n                            <p>Grade: {{answer.grade>-1 ? answer.grade : 'Ungraded'}}</p>\n                            <p>{{answer.content}}</p>\n                      </span>\n            <span class=\"answer-actions\">\n                <a (click)=\"editAnswer(answer)\">\n                \t<i class=\"material-icons edit\">edit</i>\n                </a>\n                <a (click)=\"approveAnswer(answer)\">\n                \t<i class=\"material-icons done\">done</i>\n                </a>\n                <a (click)=\"deleteAnswer(answer.id)\">\n                \t<i class=\"material-icons delete\">clear</i>\n                </a>\n            </span>\n        </div>\n        <div class=\"answer-edit\" *ngIf=\"editing && editingAnswer.id === answer.id\">\n            <input class=\"form-control\" type=\"number\"\n                 [(ngModel)]=\"editingAnswer.grade\" required>\n            <span class=\"edit-actions\">\n                <a (click)=\"updateAnswer(editingAnswer)\">\n                  <i class=\"material-icons\">done</i>\n                </a>\n                <a (click)=\"clearEditing()\">\n                  <i class=\"material-icons\">clear</i>\n                </a>\n            </span>\n        </div>\n      </li>\n    </ul>\n    <div class=\"no-answers\" *ngIf=\"answers && answers.length == 0\">\n        <p>No Answers Found!</p>\n    </div>\n</div>\n"
+module.exports = "<div class=\"answer-content\">\n  <h1 class=\"page-title\">{{this.appComponent.questionString}}</h1>\n  <h3 class=\"page-title\">Add Answer:</h3>\n  <div class=\"answer-create\">\n    <form #answerForm=\"ngForm\" (ngSubmit) = \"createAnswer(answerForm)\" novalidate>\n      <input type=\"text\" id=\"title\" class=\"form-control\" placeholder=\"Type an answer\"\n             required\n             name=\"title\" [(ngModel)]=\"newAnswer.content\"\n             #title=\"ngModel\" >\n      <input type=\"number\" id=\"grade\" class=\"form-control\" placeholder=\"Type a grade [0-100]\"\n             name=\"title\" [(ngModel)]=\"tempGrade\"\n             #title=\"ngModel\" >\n\n      <div *ngIf=\"title.errors && title.dirty\"\n           class=\"alert alert-danger\">\n        <div [hidden]=\"!title.errors.required\">\n          Please check your input\n        </div>\n      </div>\n\n      <div class=\"answer-buttons\">\n\n        <button type=\"submit\" md-raised-button color=\"primary\">Add Answer</button>\n        <div class=\"divider\"></div>\n        <button (click)=\"checkQuestion()\" md-raised-button color=\"primary\">Check Question</button>\n        <simple-notifications [options]=\"options\"></simple-notifications>\n        <div class=\"divider\"></div>\n        <button (click)=\"goBack()\" md-raised-button color=\"primary\">Go back</button>\n\n      </div>\n\n    </form>\n\n\n  </div>\n\n\n\n  <h3 class=\"page-title\">All Answers:</h3>\n  <ul class=\"answer-list\">\n    <li *ngFor=\"let answer of answers\"  >\n      <div class=\"answer-row-good\" *ngIf=\"(!editing || editingAnswer.id != answer.id) && answer.grade>=50\">\n        <span class=\"answer-prop\">\n            <a title=\"WRITER\">\n              <i class=\"material-icons person\" *ngIf=\"answer.writer==='TEACHER'\">person</i>\n              <i class=\"material-icons school\" *ngIf=\"answer.writer==='STUDENT'\">school</i>\n            </a>\n            <a title=\"IS VERIFIED\">\n              <i class=\"material-icons done_all\" *ngIf=\"answer.verified\">done_all</i>\n              <i class=\"material-icons priority_high\" *ngIf=\"!answer.verified\">priority_high</i>\n            </a>\n        </span>\n        <span class=\"answer-title\">\n          {{answer.content}} {{answer.grade>-1 ? '(' + answer.grade/100 + ')' : ''}}\n        </span>\n        <span class=\"answer-actions\">\n          <a (click)=\"approveAnswer(answer)\" title=\"APPROVE\" *ngIf=\"answer.grade>-1\">\n            <i class=\"material-icons done\">done</i>\n          </a>\n          <a (click)=\"editAnswer(answer)\" title=\"EDIT GRADE\">\n            <i class=\"material-icons edit\">edit</i>\n          </a>\n          <a (click)=\"deleteAnswer(answer.id)\" title=\"DELETE\">\n            <i class=\"material-icons delete\">clear</i>\n          </a>\n        </span>\n      </div>\n      <div class=\"answer-row-bad\" *ngIf=\"(!editing || editingAnswer.id != answer.id)&& answer.grade<50 && answer.grade>-1\">\n        <span class=\"answer-prop\">\n            <a title=\"WRITER\">\n              <i class=\"material-icons person\" *ngIf=\"answer.writer==='TEACHER'\">person</i>\n              <i class=\"material-icons school\" *ngIf=\"answer.writer==='STUDENT'\">school</i>\n            </a>\n            <a title=\"IS VERIFIED\">\n              <i class=\"material-icons done_all\" *ngIf=\"answer.verified\">done_all</i>\n              <i class=\"material-icons priority_high\" *ngIf=\"!answer.verified\">priority_high</i>\n            </a>\n        </span>\n        <span class=\"answer-title\">\n          {{answer.content}} {{answer.grade>-1 ? '(' + answer.grade/100 + ')' : ''}}\n        </span>\n        <span class=\"answer-actions\">\n                <a (click)=\"approveAnswer(answer)\" *ngIf=\"answer.grade>-1\">\n                \t<i class=\"material-icons done\">done</i>\n                </a>\n                <a (click)=\"editAnswer(answer)\">\n                \t<i class=\"material-icons edit\">edit</i>\n                </a>\n                <a (click)=\"deleteAnswer(answer.id)\">\n                \t<i class=\"material-icons delete\">clear</i>\n                </a>\n            </span>\n      </div>\n\n      <div class=\"answer-row-ungraded\" *ngIf=\"(!editing || editingAnswer.id != answer.id) && answer.grade<0\">\n        <span class=\"answer-prop\">\n            <a title=\"WRITER\">\n              <i class=\"material-icons person\" *ngIf=\"answer.writer==='TEACHER'\">person</i>\n              <i class=\"material-icons school\" *ngIf=\"answer.writer==='STUDENT'\">school</i>\n            </a>\n        </span>\n        <span class=\"answer-title\">\n          {{answer.content}} {{answer.grade>-1 ? '(' + answer.grade/100 + ')' : ''}}\n        </span>\n        <span class=\"answer-actions\">\n                <a (click)=\"editAnswer(answer)\">\n                \t<i class=\"material-icons edit\">edit</i>\n                </a>\n                <a (click)=\"deleteAnswer(answer.id)\">\n                \t<i class=\"material-icons delete\">clear</i>\n                </a>\n            </span>\n      </div>\n\n\n      <div class=\"answer-edit\" *ngIf=\"editing && editingAnswer.id === answer.id\">\n        <input class=\"form-control\" type=\"text\"\n               [(ngModel)]=\"editingAnswer.grade\" required>\n        <span class=\"edit-actions\">\n                <a (click)=\"updateAnswer(editingAnswer)\">\n                  <i class=\"material-icons\">done</i>\n                </a>\n                <a (click)=\"clearEditing()\">\n                  <i class=\"material-icons\">clear</i>\n                </a>\n            </span>\n      </div>\n    </li>\n  </ul>\n  <div class=\"no-answers\" *ngIf=\"answers && answers.length == 0\">\n    <p>No Answers Found!</p>\n  </div>\n</div>\n\n\n<!--<div class=\"answer-content\">-->\n    <!--<h1 class=\"page-title\">{{this.appComponent.answerString + '?'}}</h1>-->\n    <!--<h3 class=\"page-title\">Add Answer:</h3>-->\n  <!--<div class=\"answer-create\">-->\n      <!--<form #answerForm=\"ngForm\" (ngSubmit) = \"createAnswer(answerForm)\" novalidate>-->\n    \t\t<!--<input type=\"text\" id=\"title\" class=\"form-control\" placeholder=\"Type an answer\"-->\n    \t\t       <!--required-->\n    \t\t       <!--name=\"title\" [(ngModel)]=\"newAnswer.content\"-->\n    \t\t       <!--#title=\"ngModel\" >-->\n        <!--<input type=\"number\" id=\"grade\" class=\"form-control\" placeholder=\"Type a grade or leave empty for student ans\"-->\n               <!--name=\"grade\" [(ngModel)]=\"tempGrade\"-->\n               <!--#title=\"ngModel\" >-->\n\n        <!--<div align=\"center\">-->\n          <!--<button type=\"submit\" md-raised-button color=\"primary\">SUBMIT</button>-->\n\n        <!--</div>-->\n        <!--<h3 class=\"page-title\">All Answers:</h3>-->\n\n    \t\t<!--<div *ngIf=\"title.errors && title.dirty\"-->\n    \t\t     <!--class=\"alert alert-danger\">-->\n    \t\t    <!--<div [hidden]=\"!title.errors.required\">-->\n    \t\t      <!--Title is required.-->\n    \t\t    <!--</div>-->\n    \t\t<!--</div>-->\n    \t<!--</form>-->\n    <!--</div>-->\n    <!--<ul class=\"answer-list\">-->\n      <!--<li *ngFor=\"let answer of answers\"  >-->\n        <!--<div class=\"answer-row\" *ngIf=\"!editing || editingAnswer.id != answer.id\">-->\n\n\n                      <!--&lt;!&ndash;<span class=\"answer-title\" *ngIf=\"answer.grade>=50\">&ndash;&gt;-->\n                            <!--&lt;!&ndash;<p>{{answer.content}} - {{answer.grade>-1 ? answer.grade/100 : 'Ungraded'}}</p>&ndash;&gt;-->\n                      <!--&lt;!&ndash;</span>&ndash;&gt;-->\n                      <!--<span class=\"answer-title\" *ngIf=\"answer.grade<50 && answer.grade>-1\">-->\n                            <!--<p>{{answer.content}} - {{answer.grade>-1 ? answer.grade/100 : 'Ungraded'}}</p>-->\n                      <!--</span>-->\n                      <!--&lt;!&ndash;<span class=\"answer-title-ungraded\" *ngIf=\"answer.grade<0\">&ndash;&gt;-->\n                            <!--&lt;!&ndash;<p>{{answer.content}} - {{answer.grade>-1 ? answer.grade/100 : 'Ungraded'}}</p>&ndash;&gt;-->\n                      <!--&lt;!&ndash;</span>&ndash;&gt;-->\n\n\n          <!--<span class=\"answer-actions\">-->\n                <!--<a (click)=\"editAnswer(answer)\">-->\n                \t<!--<i class=\"material-icons edit\">edit</i>-->\n                <!--</a>-->\n                <!--<a (click)=\"approveAnswer(answer)\">-->\n                \t<!--<i class=\"material-icons done\">done</i>-->\n                <!--</a>-->\n                <!--<a (click)=\"deleteAnswer(answer.id)\">-->\n                \t<!--<i class=\"material-icons delete\">clear</i>-->\n                <!--</a>-->\n            <!--</span>-->\n        <!--</div>-->\n        <!--<div class=\"answer-edit\" *ngIf=\"editing && editingAnswer.id === answer.id\">-->\n            <!--<input class=\"form-control\" type=\"number\"-->\n                 <!--[(ngModel)]=\"editingAnswer.grade\" required>-->\n            <!--<span class=\"edit-actions\">-->\n                <!--<a (click)=\"updateAnswer(editingAnswer)\">-->\n                  <!--<i class=\"material-icons\">done</i>-->\n                <!--</a>-->\n                <!--<a (click)=\"clearEditing()\">-->\n                  <!--<i class=\"material-icons\">clear</i>-->\n                <!--</a>-->\n            <!--</span>-->\n        <!--</div>-->\n      <!--</li>-->\n    <!--</ul>-->\n    <!--<div class=\"no-answers\" *ngIf=\"answers && answers.length == 0\">-->\n        <!--<p>No Answers Found!</p>-->\n    <!--</div>-->\n<!--</div>-->\n"
 
 /***/ }),
 
@@ -29,6 +29,8 @@ module.exports = "<div class=\"answer-content\">\n    <h1 class=\"page-title\">{
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__answer__ = __webpack_require__("../../../../../src/app/answer.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__app_component__ = __webpack_require__("../../../../../src/app/app.component.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__angular_material__ = __webpack_require__("../../../material/esm5/material.es5.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_angular2_notifications__ = __webpack_require__("../../../../angular2-notifications/dist/index.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_angular2_notifications___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5_angular2_notifications__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AnswerListComponent; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -45,14 +47,21 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
+
 var AnswerListComponent = (function () {
-    function AnswerListComponent(answerService, appComponent) {
+    function AnswerListComponent(answerService, appComponent, _service) {
         this.answerService = answerService;
         this.appComponent = appComponent;
+        this._service = _service;
         this.newAnswer = new __WEBPACK_IMPORTED_MODULE_2__answer__["a" /* Answer */]();
         this.editing = false;
         this.editingAnswer = new __WEBPACK_IMPORTED_MODULE_2__answer__["a" /* Answer */]();
         this.tempGrade = null;
+        this.options = {
+            position: ["bottom", "right"],
+            timeOut: 5000,
+            lastOnBottom: true,
+        };
     }
     AnswerListComponent.prototype.ngOnInit = function () {
         this.getAnswers();
@@ -72,7 +81,6 @@ var AnswerListComponent = (function () {
             this.newAnswer.grade = this.tempGrade;
             this.newAnswer.writer = 'TEACHER';
         }
-        this.clearEditing();
         this.answerService.createAnswer(this.appComponent.test, this.appComponent.question, this.newAnswer)
             .then(function (createAnswer) {
             answerForm.reset();
@@ -89,7 +97,6 @@ var AnswerListComponent = (function () {
     };
     AnswerListComponent.prototype.updateAnswer = function (answerData) {
         var _this = this;
-        answerData.verified = true;
         console.log(answerData);
         this.answerService.updateAnswer(this.appComponent.test, this.appComponent.question, answerData)
             .then(function (updatedAnswer) {
@@ -116,22 +123,46 @@ var AnswerListComponent = (function () {
         this.tempGrade = null;
         this.editing = false;
     };
+    AnswerListComponent.prototype.goBack = function () {
+        this.appComponent.question = null;
+        this.appComponent.questionString = null;
+        this.appComponent.mode = 2;
+    };
+    AnswerListComponent.prototype.checkQuestion = function () {
+        var _this = this;
+        this._service.info('Checking Question', 'It may take some time...', {
+            showProgressBar: true,
+            pauseOnHover: true,
+            clickToClose: true,
+            maxLength: 50
+        });
+        this.answerService.checkQuestion(this.appComponent.test, this.appComponent.question)
+            .then(function (x) {
+            _this._service.success('Done!', 'we will now load grades', {
+                showProgressBar: true,
+                pauseOnHover: true,
+                clickToClose: true,
+                maxLength: 50
+            });
+            _this.getAnswers();
+        });
+    };
     return AnswerListComponent;
 }());
 AnswerListComponent = __decorate([
-    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["b" /* NgModule */])({
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["NgModule"])({
         imports: [
             __WEBPACK_IMPORTED_MODULE_4__angular_material__["a" /* MdButtonModule */]
         ]
     }),
-    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_2" /* Component */])({
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
         selector: 'answer-list',
         template: __webpack_require__("../../../../../src/app/answer-list.component.html")
     }),
-    __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__answer_service__["a" /* AnswerService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1__answer_service__["a" /* AnswerService */]) === "function" && _a || Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_3__app_component__["a" /* AppComponent */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3__app_component__["a" /* AppComponent */]) === "function" && _b || Object])
+    __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__answer_service__["a" /* AnswerService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1__answer_service__["a" /* AnswerService */]) === "function" && _a || Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_3__app_component__["a" /* AppComponent */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3__app_component__["a" /* AppComponent */]) === "function" && _b || Object, typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_5_angular2_notifications__["NotificationsService"] !== "undefined" && __WEBPACK_IMPORTED_MODULE_5_angular2_notifications__["NotificationsService"]) === "function" && _c || Object])
 ], AnswerListComponent);
 
-var _a, _b;
+var _a, _b, _c;
 //# sourceMappingURL=answer-list.component.js.map
 
 /***/ }),
@@ -188,10 +219,16 @@ var AnswerService = (function () {
         console.error('Some error occured', error);
         return Promise.reject(error.message || error);
     };
+    AnswerService.prototype.checkQuestion = function (tid, id) {
+        return this.http.get(this.baseUrl + '/api/tests/' + tid + '/questions/' + id + '/check')
+            .toPromise()
+            .then(function (response) { })
+            .catch(this.handleError);
+    };
     return AnswerService;
 }());
 AnswerService = __decorate([
-    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["c" /* Injectable */])(),
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Injectable"])(),
     __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__angular_http__["b" /* Http */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1__angular_http__["b" /* Http */]) === "function" && _a || Object])
 ], AnswerService);
 
@@ -236,7 +273,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/app.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "\n\n<main>\n  <button (click)=\"back()\" md-raised-button color=\"primary\">GO BACK</button>\n\n\n  <test-list *ngIf=\"mode===1\"></test-list>\n  <question-list *ngIf=\"mode===2\"></question-list>\n  <answer-list *ngIf=\"mode===3\"></answer-list>\n</main>\n"
+module.exports = "<main>\n  <test-list *ngIf=\"mode===1\"></test-list>\n  <question-list *ngIf=\"mode===2\"></question-list>\n  <answer-list *ngIf=\"mode===3\"></answer-list>\n</main>\n"
 
 /***/ }),
 
@@ -245,6 +282,8 @@ module.exports = "\n\n<main>\n  <button (click)=\"back()\" md-raised-button colo
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("../../../core/@angular/core.es5.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_angular2_notifications__ = __webpack_require__("../../../../angular2-notifications/dist/index.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_angular2_notifications___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_angular2_notifications__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AppComponent; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -252,27 +291,42 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
 
 var AppComponent = (function () {
-    function AppComponent() {
+    function AppComponent(_service) {
+        this._service = _service;
         this.title = 'app';
         this.mode = 1;
+        this.options = {
+            position: ["bottom", "right"],
+            timeOut: 5000,
+            lastOnBottom: true,
+        };
     }
-    AppComponent.prototype.back = function () {
-        if (this.mode > 1) {
-            this.mode--;
-        }
+    AppComponent.prototype.create = function () {
+        this._service.success('Some Title', 'Some Content', {
+            showProgressBar: true,
+            pauseOnHover: true,
+            clickToClose: true,
+            maxLength: 10
+        });
     };
     return AppComponent;
 }());
 AppComponent = __decorate([
-    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_2" /* Component */])({
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
         selector: 'app-root',
         template: __webpack_require__("../../../../../src/app/app.component.html"),
         styles: [__webpack_require__("../../../../../src/app/app.component.css")]
-    })
+    }),
+    __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1_angular2_notifications__["NotificationsService"] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_angular2_notifications__["NotificationsService"]) === "function" && _a || Object])
 ], AppComponent);
 
+var _a;
 //# sourceMappingURL=app.component.js.map
 
 /***/ }),
@@ -293,6 +347,8 @@ AppComponent = __decorate([
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__answer_list_component__ = __webpack_require__("../../../../../src/app/answer-list.component.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__answer_service__ = __webpack_require__("../../../../../src/app/answer.service.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__angular_material__ = __webpack_require__("../../../material/esm5/material.es5.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12_angular2_notifications__ = __webpack_require__("../../../../angular2-notifications/dist/index.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12_angular2_notifications___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_12_angular2_notifications__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AppModule; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -312,16 +368,14 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 
 
 
-// import {enableProdMode} from '@angular/core';
-//
-// enableProdMode();
+
 var AppModule = (function () {
     function AppModule() {
     }
     return AppModule;
 }());
 AppModule = __decorate([
-    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__angular_core__["b" /* NgModule */])({
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__angular_core__["NgModule"])({
         declarations: [
             __WEBPACK_IMPORTED_MODULE_4__app_component__["a" /* AppComponent */],
             __WEBPACK_IMPORTED_MODULE_5__test_list_component__["a" /* TestListComponent */],
@@ -329,10 +383,11 @@ AppModule = __decorate([
             __WEBPACK_IMPORTED_MODULE_9__answer_list_component__["a" /* AnswerListComponent */]
         ],
         imports: [
-            __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser__["a" /* BrowserModule */],
+            __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser__["BrowserModule"],
             __WEBPACK_IMPORTED_MODULE_2__angular_http__["a" /* HttpModule */],
             __WEBPACK_IMPORTED_MODULE_3__angular_forms__["a" /* FormsModule */],
-            __WEBPACK_IMPORTED_MODULE_11__angular_material__["a" /* MdButtonModule */]
+            __WEBPACK_IMPORTED_MODULE_11__angular_material__["a" /* MdButtonModule */],
+            __WEBPACK_IMPORTED_MODULE_12_angular2_notifications__["SimpleNotificationsModule"].forRoot()
         ],
         providers: [__WEBPACK_IMPORTED_MODULE_6__test_service__["a" /* TestService */], __WEBPACK_IMPORTED_MODULE_8__question_service__["a" /* QuestionService */], __WEBPACK_IMPORTED_MODULE_10__answer_service__["a" /* AnswerService */]],
         bootstrap: [__WEBPACK_IMPORTED_MODULE_4__app_component__["a" /* AppComponent */]]
@@ -346,7 +401,7 @@ AppModule = __decorate([
 /***/ "../../../../../src/app/question-list.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"question-content\">\n  <h1 class=\"page-title\">{{this.appComponent.testString}}</h1>\n  <h3 class=\"page-title\">Add Question:</h3>\n    <div class=\"question-create\">\n      <form #questionForm=\"ngForm\" (ngSubmit) = \"createQuestion(questionForm)\" novalidate>\n    \t\t<input type=\"text\" id=\"title\" class=\"form-control\" placeholder=\"Type a question and press enter...\"\n    \t\t       required\n    \t\t       name=\"title\" [(ngModel)]=\"newQuestion.content\"\n    \t\t       #title=\"ngModel\" >\n\n    \t\t<div *ngIf=\"title.errors && title.dirty\"\n    \t\t     class=\"alert alert-danger\">\n    \t\t    <div [hidden]=\"!title.errors.required\">\n    \t\t      Title is required.\n    \t\t    </div>\n    \t\t</div>\n    \t</form>\n    </div>\n  <h3 class=\"page-title\">All Questions:</h3>\n  <ul class=\"question-list\">\n      <li *ngFor=\"let question of questions\"  >\n        <div class=\"question-row\" *ngIf=\"!editing || editingQuestion.id != question.id\">\n                      <span class=\"question-title\">\n            \t{{question.content}}\n            </span>\n            <span class=\"question-actions\">\n                <a (click)=\"editQuestion(question)\">\n                \t<i class=\"material-icons edit\">edit</i>\n                </a>\n                <a (click)=\"buildQuestion(question)\">\n                \t<i class=\"material-icons build\">build</i>\n                </a>\n                <a (click)=\"checkQuestion(question)\">\n                \t<i class=\"material-icons school\">school</i>\n                </a>\n                <a (click)=\"deleteQuestion(question.id)\">\n                \t<i class=\"material-icons delete\">clear</i>\n                </a>\n            </span>\n        </div>\n        <div class=\"question-edit\" *ngIf=\"editing && editingQuestion.id === question.id\">\n            <input class=\"form-control\" type=\"text\"\n             [(ngModel)]=\"editingQuestion.content\" required>\n            <span class=\"edit-actions\">\n                <a (click)=\"updateQuestion(editingQuestion)\">\n                  <i class=\"material-icons\">done</i>\n                </a>\n                <a (click)=\"clearEditing()\">\n                  <i class=\"material-icons\">clear</i>\n                </a>\n            </span>\n        </div>\n      </li>\n    </ul>\n    <div class=\"no-questions\" *ngIf=\"questions && questions.length == 0\">\n        <p>No Questions Found!</p>\n    </div>\n</div>\n"
+module.exports = "<div class=\"question-content\">\n  <h1 class=\"page-title\">{{this.appComponent.testString}}</h1>\n  <h3 class=\"page-title\">Add Question:</h3>\n    <div class=\"question-create\">\n      <form #questionForm=\"ngForm\" (ngSubmit) = \"createQuestion(questionForm)\" novalidate>\n    \t\t<input type=\"text\" id=\"title\" class=\"form-control\" placeholder=\"Type a question\"\n    \t\t       required\n    \t\t       name=\"title\" [(ngModel)]=\"newQuestion.content\"\n    \t\t       #title=\"ngModel\" >\n\n    \t\t<div *ngIf=\"title.errors && title.dirty\"\n    \t\t     class=\"alert alert-danger\">\n    \t\t    <div [hidden]=\"!title.errors.required\">\n    \t\t      Title is required.\n    \t\t    </div>\n    \t\t</div>\n        <div class=\"question-buttons\">\n\n          <button type=\"submit\" md-raised-button color=\"primary\">Add Question</button>\n          <div class=\"divider\"></div>\n          <button (click)=\"checkTest()\" md-raised-button color=\"primary\">Check Test</button>\n          <div class=\"divider\"></div>\n          <button (click)=\"goBack()\" md-raised-button color=\"primary\">Go back</button>\n        </div>\n\n      </form>\n\n\n    </div>\n  <h3 class=\"page-title\">All Questions:</h3>\n  <ul class=\"question-list\">\n      <li *ngFor=\"let question of questions\"  >\n        <div class=\"question-row\" *ngIf=\"!editing || editingQuestion.id != question.id\">\n                      <span class=\"question-title\">\n            \t{{question.content}}\n            </span>\n            <span class=\"question-actions\">\n                <a (click)=\"editQuestion(question)\">\n                \t<i class=\"material-icons edit\">edit</i>\n                </a>\n                <a (click)=\"buildQuestion(question)\">\n                \t<i class=\"material-icons build\">build</i>\n                </a>\n                <a (click)=\"deleteQuestion(question.id)\">\n                \t<i class=\"material-icons delete\">clear</i>\n                </a>\n            </span>\n        </div>\n        <div class=\"question-edit\" *ngIf=\"editing && editingQuestion.id === question.id\">\n            <input class=\"form-control\" type=\"text\"\n             [(ngModel)]=\"editingQuestion.content\" required>\n            <span class=\"edit-actions\">\n                <a (click)=\"updateQuestion(editingQuestion)\">\n                  <i class=\"material-icons\">done</i>\n                </a>\n                <a (click)=\"clearEditing()\">\n                  <i class=\"material-icons\">clear</i>\n                </a>\n            </span>\n        </div>\n      </li>\n    </ul>\n    <div class=\"no-questions\" *ngIf=\"questions && questions.length == 0\">\n        <p>No Questions Found!</p>\n    </div>\n</div>\n"
 
 /***/ }),
 
@@ -427,14 +482,19 @@ var QuestionListComponent = (function () {
         this.appComponent.questionString = question.content;
         this.appComponent.mode = 3;
     };
-    QuestionListComponent.prototype.checkQuestion = function (question) {
-        this.questionService.checkQuestion(this.appComponent.test, question.id)
+    QuestionListComponent.prototype.checkTest = function () {
+        this.questionService.checkTest(this.appComponent.test)
             .then();
+    };
+    QuestionListComponent.prototype.goBack = function () {
+        this.appComponent.test = null;
+        this.appComponent.testString = null;
+        this.appComponent.mode = 1;
     };
     return QuestionListComponent;
 }());
 QuestionListComponent = __decorate([
-    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_2" /* Component */])({
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
         selector: 'question-list',
         template: __webpack_require__("../../../../../src/app/question-list.component.html")
     }),
@@ -498,8 +558,8 @@ var QuestionService = (function () {
         console.error('Some error occured', error);
         return Promise.reject(error.message || error);
     };
-    QuestionService.prototype.checkQuestion = function (tid, id) {
-        return this.http.get(this.baseUrl + '/api/tests/' + tid + '/questions/' + id + '/check')
+    QuestionService.prototype.checkTest = function (tid) {
+        return this.http.get(this.baseUrl + '/api/tests/' + tid + '/check')
             .toPromise()
             .then(function (response) { })
             .catch(this.handleError);
@@ -507,7 +567,7 @@ var QuestionService = (function () {
     return QuestionService;
 }());
 QuestionService = __decorate([
-    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["c" /* Injectable */])(),
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Injectable"])(),
     __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__angular_http__["b" /* Http */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1__angular_http__["b" /* Http */]) === "function" && _a || Object])
 ], QuestionService);
 
@@ -534,7 +594,7 @@ var Question = (function () {
 /***/ "../../../../../src/app/test-list.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"test-content\">\n    <h1 class=\"page-title\">My Tests</h1>\n    <div class=\"test-create\">\n      <form #testForm=\"ngForm\" (ngSubmit) = \"createTest(testForm)\" novalidate>\n    \t\t<input type=\"text\" id=\"title\" class=\"form-control\" placeholder=\"Type a test and press enter...\"\n    \t\t       required\n    \t\t       name=\"title\" [(ngModel)]=\"newTest.content\"\n    \t\t       #title=\"ngModel\" >\n\n    \t\t<div *ngIf=\"title.errors && title.dirty\"\n    \t\t     class=\"alert alert-danger\">\n    \t\t    <div [hidden]=\"!title.errors.required\">\n    \t\t      Title is required.\n    \t\t    </div>\n    \t\t</div>\n    \t</form>\n    </div>\n    <ul class=\"test-list\">\n      <li *ngFor=\"let test of tests\"  >\n        <div class=\"test-row\" *ngIf=\"!editing || editingTest.id != test.id\">\n                      <span class=\"test-title\">\n            \t{{test.content}}\n            </span>\n            <span class=\"test-actions\">\n                <a (click)=\"editTest(test)\">\n                \t<i class=\"material-icons edit\">edit</i>\n                </a>\n                <a (click)=\"buildTest(test)\">\n                \t<i class=\"material-icons build\">build</i>\n                </a>\n                <a (click)=\"checkTest(test)\">\n                \t<i class=\"material-icons school\">school</i>\n                </a>\n                <a (click)=\"deleteTest(test.id)\">\n                \t<i class=\"material-icons delete\">clear</i>\n                </a>\n            </span>\n        </div>\n        <div class=\"test-edit\" *ngIf=\"editing && editingTest.id === test.id\">\n            <input class=\"form-control\" type=\"text\"\n             [(ngModel)]=\"editingTest.content\" required>\n            <span class=\"edit-actions\">\n                <a (click)=\"updateTest(editingTest)\">\n                  <i class=\"material-icons\">done</i>\n                </a>\n                <a (click)=\"clearEditing()\">\n                  <i class=\"material-icons\">clear</i>\n                </a>\n            </span>\n        </div>\n      </li>\n    </ul>\n    <div class=\"no-tests\" *ngIf=\"tests && tests.length == 0\">\n        <p>No Tests Found!</p>\n    </div>\n</div>\n"
+module.exports = "<div class=\"test-content\">\n    <h1 class=\"page-title\">My Tests</h1>\n    <div class=\"test-create\">\n      <form #testForm=\"ngForm\" (ngSubmit) = \"createTest(testForm)\" novalidate>\n    \t\t<input type=\"text\" id=\"title\" class=\"form-control\" placeholder=\"Give a name to this Test\"\n    \t\t       required\n    \t\t       name=\"title\" [(ngModel)]=\"newTest.content\"\n    \t\t       #title=\"ngModel\" >\n\n    \t\t<div *ngIf=\"title.errors && title.dirty\"\n    \t\t     class=\"alert alert-danger\">\n    \t\t    <div [hidden]=\"!title.errors.required\">\n    \t\t      Title is required.\n    \t\t    </div>\n    \t\t</div>\n\n        <div class=\"test-buttons\">\n          <button type=\"submit\" md-raised-button color=\"primary\">Add Test</button>\n        </div>\n\n\n      </form>\n\n\n    </div>\n    <ul class=\"test-list\">\n      <li *ngFor=\"let test of tests\"  >\n        <div class=\"test-row\" *ngIf=\"!editing || editingTest.id != test.id\">\n                      <span class=\"test-title\">\n            \t{{test.content}}\n            </span>\n            <span class=\"test-actions\">\n                <a (click)=\"editTest(test)\">\n                \t<i class=\"material-icons edit\">edit</i>\n                </a>\n                <a (click)=\"buildTest(test)\">\n                \t<i class=\"material-icons build\">build</i>\n                </a>\n                <a (click)=\"deleteTest(test.id)\">\n                \t<i class=\"material-icons delete\">clear</i>\n                </a>\n            </span>\n        </div>\n        <div class=\"test-edit\" *ngIf=\"editing && editingTest.id === test.id\">\n            <input class=\"form-control\" type=\"text\"\n             [(ngModel)]=\"editingTest.content\" required>\n            <span class=\"edit-actions\">\n                <a (click)=\"updateTest(editingTest)\">\n                  <i class=\"material-icons\">done</i>\n                </a>\n                <a (click)=\"clearEditing()\">\n                  <i class=\"material-icons\">clear</i>\n                </a>\n            </span>\n        </div>\n      </li>\n    </ul>\n    <div class=\"no-tests\" *ngIf=\"tests && tests.length == 0\">\n        <p>No Tests Found!</p>\n    </div>\n</div>\n"
 
 /***/ }),
 
@@ -615,14 +675,10 @@ var TestListComponent = (function () {
         this.appComponent.testString = test.content;
         this.appComponent.mode = 2;
     };
-    TestListComponent.prototype.checkTest = function (test) {
-        this.testService.checkTest(test.id)
-            .then();
-    };
     return TestListComponent;
 }());
 TestListComponent = __decorate([
-    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_2" /* Component */])({
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
         selector: 'test-list',
         template: __webpack_require__("../../../../../src/app/test-list.component.html")
     }),
@@ -659,7 +715,6 @@ var TestService = (function () {
     function TestService(http) {
         this.http = http;
         this.baseUrl = 'http://bgucsproject.azurewebsites.net';
-        this.mode = 0;
     }
     TestService.prototype.getTests = function () {
         return this.http.get(this.baseUrl + '/api/tests/')
@@ -687,16 +742,10 @@ var TestService = (function () {
         console.error('Some error occured', error);
         return Promise.reject(error.message || error);
     };
-    TestService.prototype.checkTest = function (tid) {
-        return this.http.get(this.baseUrl + '/api/tests/' + tid + '/check')
-            .toPromise()
-            .then(function (response) { })
-            .catch(this.handleError);
-    };
     return TestService;
 }());
 TestService = __decorate([
-    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["c" /* Injectable */])(),
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Injectable"])(),
     __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__angular_http__["b" /* Http */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1__angular_http__["b" /* Http */]) === "function" && _a || Object])
 ], TestService);
 
@@ -751,7 +800,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 if (__WEBPACK_IMPORTED_MODULE_3__environments_environment__["a" /* environment */].production) {
-    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["a" /* enableProdMode */])();
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["enableProdMode"])();
 }
 __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__angular_platform_browser_dynamic__["a" /* platformBrowserDynamic */])().bootstrapModule(__WEBPACK_IMPORTED_MODULE_2__app_app_module__["a" /* AppModule */]);
 //# sourceMappingURL=main.js.map

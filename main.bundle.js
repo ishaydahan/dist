@@ -201,10 +201,10 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 var AnswerService = (function () {
-    // private baseUrl = 'http://bgucsproject.azurewebsites.net';
     function AnswerService(http) {
         this.http = http;
-        this.baseUrl = 'http://localhost:8080';
+        // private baseUrl = 'http://localhost:8080';
+        this.baseUrl = 'http://bgucsproject.azurewebsites.net';
     }
     AnswerService.prototype.getAnswers = function (tid, qid) {
         return this.http.get(this.baseUrl + '/api/tests/' + tid + '/questions/' + qid + '/answers/')
@@ -564,10 +564,10 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 var QuestionService = (function () {
-    // private baseUrl = 'http://bgucsproject.azurewebsites.net';
     function QuestionService(http) {
         this.http = http;
-        this.baseUrl = 'http://localhost:8080';
+        // private baseUrl = 'http://localhost:8080';
+        this.baseUrl = 'http://bgucsproject.azurewebsites.net';
     }
     QuestionService.prototype.getQuestions = function (tid) {
         return this.http.get(this.baseUrl + '/api/tests/' + tid + '/questions/')
@@ -761,10 +761,10 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 var TestService = (function () {
-    // private baseUrl = 'http://bgucsproject.azurewebsites.net';
     function TestService(http) {
         this.http = http;
-        this.baseUrl = 'http://localhost:8080';
+        // private baseUrl = 'http://localhost:8080';
+        this.baseUrl = 'http://bgucsproject.azurewebsites.net';
     }
     TestService.prototype.getTests = function () {
         return this.http.get(this.baseUrl + '/api/tests/')

@@ -91,7 +91,6 @@ var AnswerListComponent = (function () {
             this.newAnswer.grade = this.tempGrade;
             this.newAnswer.writer = 'TEACHER';
         }
-        this.newAnswer.content = this.newAnswer.content.toLowerCase();
         this.answerService.createAnswer(this.appComponent.test, this.appComponent.question, this.newAnswer)
             .then(function (createAnswer) {
             answerForm.reset();
